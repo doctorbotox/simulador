@@ -112,17 +112,40 @@
     box-sizing: border-box;
     resize: vertical;
   }
-  .gender-group {
+  .name-gender-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .name-field {
+    flex: 1;
+    margin-right: 20px;
+  }
+  .gender-field {
+    width: 200px;
+  }
+  .gender-options {
     display: flex;
     gap: 10px;
   }
-  .gender-group label {
+  .gender-options label {
     display: flex;
     align-items: center;
+    margin-bottom: 0;
+  }
+  .gender-options input[type="radio"] {
+    margin-right: 5px;
+  }
+  #marking-type {
+    margin-bottom: 20px;
+  }
+  #marking-type label {
+    margin-right: 20px;
     cursor: pointer;
   }
-  .gender-group input[type="radio"] {
-    margin-right: 5px;
+  .point.adjustment {
+    background-color: rgba(255, 255, 0, 0.7);
+    border: 2px solid #ffd700;
   }
   footer {
     text-align: center;
@@ -147,10 +170,10 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 30px;
   }
   #camera-feed {
     width: 100%;
@@ -159,40 +182,116 @@
     object-fit: cover;
     margin-bottom: 20px;
   }
+  #doctor-channel-info p {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 15px;
+  }
+  #doctor-channel-info .button {
+    background-color: #28a745;
+    text-decoration: none;
+    display: inline-block;
+  }
+  #doctor-channel-info .button:hover {
+    background-color: #218838;
+  }
+  .date-group {
+    display: flex;
+    justify-content: space-between;
+  }
+  .date-field {
+    width: 48%;
+  }
+  .age-display {
+    margin-left: 10px;
+  }
+  .age-display input {
+    width: 50px;
+    display: inline-block;
+  }
+  #password-modal .modal-content {
+    max-width: 300px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+  }
+  #password-modal h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 1.5em;
+  }
+  #password-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  #submit-password {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  #submit-password:hover {
+    background-color: #0056b3;
+  }
 </style>
 </head>
 <body>
-  <div class="container">
+  <div id="password-modal" class="modal">
+    <div class="modal-content">
+      <h2>Acesso ao Simulador</h2>
+      <input type="password" id="password-input" placeholder="Digite a senha">
+      <button id="submit-password" class="button">Entrar</button>
+    </div>
+  </div>
+  <div class="container hidden">
     <h1>Simulador de Aplicação de Botox</h1>
     
     <form id="patient-form">
       <h2>Cadastro do Paciente</h2>
       <div class="form-group">
-        <label for="fullName">Nome completo:</label>
-        <input type="text" id="fullName" name="fullName" required>
-      </div>
-      <div class="form-group">
-        <label>Gênero:</label>
-        <div class="gender-group">
-          <label>
-            <input type="radio" name="gender" value="masculino" required> Masculino
-          </label>
-          <label>
-            <input type="radio" name="gender" value="feminino" required> Feminino
-          </label>
+        <div class="name-gender-group">
+          <div class="name-field">
+            <label for="fullName">Nome completo:</label>
+            <input type="text" id="fullName" name="fullName" required>
+          </div>
+          <div class="gender-field">
+            <label>Gênero:</label>
+            <div class="gender-options">
+              <label>
+                <input type="radio" name="gender" value="masculino" required> Masculino
+              </label>
+              <label>
+                <input type="radio" name="gender" value="feminino" required> Feminino
+              </label>
+            </div>
+          </div>
         </div>
       </div>
       <div class="form-group">
         <label for="birthDate">Data de Nascimento:</label>
         <input type="date" id="birthDate" name="birthDate" required>
+        <span class="age-display">Idade: <input type="text" id="age" name="age" readonly></span>
       </div>
-      <div class="form-group">
-        <label for="age">Idade:</label>
-        <input type="text" id="age" name="age" readonly>
-      </div>
-      <div class="form-group">
-        <label for="applicationDate">Data da Aplicação:</label>
-        <input type="date" id="applicationDate" name="applicationDate" required>
+      <div class="form-group date-group">
+        <div class="date-field">
+          <label for="applicationDate">Data da Aplicação:</label>
+          <input type="date" id="applicationDate" name="applicationDate" required>
+        </div>
+        <div class="date-field">
+          <label for="adjustmentDate">Data do Ajuste:</label>
+          <input type="date" id="adjustmentDate" name="adjustmentDate">
+        </div>
       </div>
       <div class="form-group">
         <label for="timeSinceApplication">Intervalo entre a última aplicação:</label>
@@ -204,10 +303,28 @@
       </div>
     </form>
 
+    <div id="marking-type" style="text-align: center; margin-bottom: 20px;">
+      <label>
+        <input type="radio" name="marking-type" value="treatment" checked> Tratamento
+      </label>
+      <label>
+        <input type="radio" name="marking-type" value="adjustment"> Ajuste
+      </label>
+    </div>
+
+    <div id="doctor-channel-info" style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
+      <p>Doctor Channel tv, o canal de tv personalizado para sua sala de espera!</p>
+      <a href="https://wa.me/5531984911827?text=Estou%20usando%20o%20simulador%20de%20botox%20e%20gostaria%20de%20saber%20mais%20sobre%20o%20Doctor%20Channel" target="_blank" class="button">Clique Aqui e Saiba Mais</a>
+    </div>
+
     <div id="face-container">
       <img id="face" src="https://cdn.goconqr.com/uploads/node/image/62603468/desktop_320e31d6-449c-4047-aea9-98bcac1e7aa3.png" alt="Diagrama facial para aplicação de botox" width="600" height="400">
     </div>
-    <div id="total-units">Total de unidades: 0</div>
+    <div id="total-units">
+      <div>Total de unidades (Tratamento): <span id="treatment-total">0,0</span></div>
+      <div>Total de unidades (Ajuste): <span id="adjustment-total">0,0</span></div>
+      <div>Total geral: <span id="overall-total">0,0</span></div>
+    </div>
     <div id="button-container">
       <button id="undo-button" class="button">Desfazer</button>
       <button id="reset-button" class="button">Reiniciar</button>
@@ -231,6 +348,32 @@
   </div>
 
   <script>
+    const passwordModal = document.getElementById('password-modal');
+    const passwordInput = document.getElementById('password-input');
+    const submitPasswordButton = document.getElementById('submit-password');
+    const simulatorContent = document.querySelector('.container');
+
+    simulatorContent.classList.add('hidden');
+    passwordModal.style.display = 'block';
+
+    submitPasswordButton.addEventListener('click', checkPassword);
+
+    function checkPassword() {
+      if (passwordInput.value === '1212') {
+        passwordModal.style.display = 'none';
+        simulatorContent.classList.remove('hidden');
+      } else {
+        alert('Senha incorreta. Tente novamente.');
+        passwordInput.value = '';
+      }
+    }
+
+    passwordInput.addEventListener('keyup', function(event) {
+      if (event.key === 'Enter') {
+        checkPassword();
+      }
+    });
+
     const faceContainer = document.getElementById('face-container');
     const faceImage = document.getElementById('face');
     const totalUnitsDisplay = document.getElementById('total-units');
@@ -243,6 +386,8 @@
     const photoInput = document.getElementById('photo-input');
     const uploadPhotoButton = document.getElementById('upload-photo-button');
     const patientForm = document.getElementById('patient-form');
+    const adjustmentDateInput = document.getElementById('adjustmentDate');
+    const markingTypeRadios = document.querySelectorAll('input[name="marking-type"]');
     const birthDateInput = document.getElementById('birthDate');
     const ageInput = document.getElementById('age');
     const applicationDateInput = document.getElementById('applicationDate');
@@ -250,8 +395,10 @@
     const DEFAULT_FACE_IMAGE = "https://cdn.goconqr.com/uploads/node/image/62603468/desktop_320e31d6-449c-4047-aea9-98bcac1e7aa3.png";
     let points = [];
     let totalUnits = 0;
+    let adjustmentUnits = 0;
     let isDragging = false;
     let currentDraggingPoint = null;
+    let currentMarkingType = 'treatment';
     const openCameraButton = document.getElementById('open-camera-button');
     const cameraModal = document.getElementById('camera-modal');
     const cameraFeed = document.getElementById('camera-feed');
@@ -259,6 +406,12 @@
     const capturePhotoButton = document.getElementById('capture-photo-button');
     const closeCameraButton = document.getElementById('close-camera-button');
     let stream = null;
+
+    markingTypeRadios.forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        currentMarkingType = e.target.value;
+      });
+    });
 
     faceContainer.addEventListener('mouseup', (e) => {
       if (!isDragging) {
@@ -366,34 +519,49 @@
       currentDraggingPoint = null;
     }
 
-    function addPoint(x, y, units = null) {
+    function addPoint(x, y, units = null, type = currentMarkingType) {
       const point = document.createElement('div');
       point.classList.add('point');
+      if (type === 'adjustment') {
+        point.classList.add('adjustment');
+      }
       point.style.left = `${x}px`;
       point.style.top = `${y}px`;
       point.style.cursor = 'move';
       faceContainer.appendChild(point);
 
       if (units === null) {
-        units = prompt('Quantas unidades para este ponto?');
+        units = prompt('Quantas unidades para este ponto? (Pode usar números decimais, use vírgula como separador)');
       }
 
-      if (units && !isNaN(units)) {
-        const unitsNum = parseInt(units);
-        totalUnits += unitsNum;
+      if (units && !isNaN(parseFloat(units.replace(',', '.')))) {
+        const unitsNum = parseFloat(units.replace(',', '.'));
+        if (type === 'adjustment') {
+          adjustmentUnits += unitsNum;
+        } else {
+          totalUnits += unitsNum;
+        }
         
         const label = document.createElement('div');
         label.classList.add('unit-label');
         label.style.left = `${x + 15}px`;
         label.style.top = `${y - 20}px`;
-        label.textContent = unitsNum;
+
+        label.textContent = unitsNum < 1 ? `0${units}` : units;
+        
         faceContainer.appendChild(label);
         
-        points.push({ element: point, label: label, x, y, units: unitsNum });
+        points.push({ element: point, label: label, x, y, units: unitsNum, type });
         updateTotalUnits();
+        updateAdjustmentDateRequirement();
       } else {
         faceContainer.removeChild(point);
       }
+    }
+
+    function updateAdjustmentDateRequirement() {
+      const hasAdjustmentPoints = points.some(point => point.type === 'adjustment');
+      adjustmentDateInput.required = hasAdjustmentPoints;
     }
 
     function undoLastPoint() {
@@ -401,8 +569,13 @@
         const lastPoint = points.pop();
         faceContainer.removeChild(lastPoint.element);
         faceContainer.removeChild(lastPoint.label);
-        totalUnits -= lastPoint.units;
+        if (lastPoint.type === 'adjustment') {
+          adjustmentUnits = parseFloat((adjustmentUnits - lastPoint.units).toFixed(2));
+        } else {
+          totalUnits = parseFloat((totalUnits - lastPoint.units).toFixed(2));
+        }
         updateTotalUnits();
+        updateAdjustmentDateRequirement();
       }
     }
 
@@ -414,11 +587,16 @@
       
       points = [];
       totalUnits = 0;
+      adjustmentUnits = 0;
       updateTotalUnits();
+      updateAdjustmentDateRequirement();
     }
 
     function updateTotalUnits() {
-      totalUnitsDisplay.textContent = `Total de unidades: ${totalUnits}`;
+      document.getElementById('treatment-total').textContent = totalUnits.toFixed(1).replace('.', ',');
+      document.getElementById('adjustment-total').textContent = adjustmentUnits.toFixed(1).replace('.', ',');
+      const overallTotal = (totalUnits + adjustmentUnits).toFixed(1).replace('.', ',');
+      document.getElementById('overall-total').textContent = overallTotal;
     }
 
     function calculateAge() {
@@ -451,9 +629,11 @@
         points: points.map(point => ({
           x: point.x,
           y: point.y,
-          units: point.units
+          units: point.label.textContent,
+          type: point.type
         })),
-        totalUnits: totalUnits
+        totalUnits: totalUnits,
+        adjustmentUnits: adjustmentUnits
       };
       
       const json = JSON.stringify(data);
@@ -495,8 +675,10 @@
             calculateTimeSinceApplication();
             
             importedData.points.forEach(point => {
-              addPoint(point.x, point.y, point.units);
+              addPoint(point.x, point.y, point.units, point.type || 'treatment');
             });
+            
+            updateAdjustmentDateRequirement();
           } catch (error) {
             console.error('Erro ao importar o plano:', error);
             alert('Erro ao importar o plano. Por favor, verifique o arquivo.');
@@ -512,6 +694,7 @@
       timeSinceApplicationInput.value = '';
       resetSimulation();
       faceImage.src = DEFAULT_FACE_IMAGE;
+      adjustmentDateInput.required = false;
     }
   </script>
 <footer>

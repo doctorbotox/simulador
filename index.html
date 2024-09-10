@@ -1,7 +1,7 @@
 <html><head><base href="https://marcarbotox.clinic/" />
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Clínica de Botox - Simulador de Aplicação</title>
+<title>Planejador de Aplicações de Toxina Botulínica</title>
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -255,7 +255,7 @@
     </div>
   </div>
   <div class="container hidden">
-    <h1>Simulador de Aplicação de Botox</h1>
+    <h1>Planejador de Aplicações de Toxina Botulínica</h1>
     
     <form id="patient-form">
       <h2>Cadastro do Paciente</h2>
@@ -328,8 +328,8 @@
     <div id="button-container">
       <button id="undo-button" class="button">Desfazer</button>
       <button id="reset-button" class="button">Reiniciar</button>
-      <button id="export-button" class="button">Exportar Plano</button>
-      <button id="import-button" class="button">Importar Plano</button>
+      <button id="custom-save-button" class="button">Salvar Plano</button>
+      <button id="import-button" class="button">Abrir Plano</button>
       <button id="new-patient-button" class="button">Novo Cadastro</button>
       <button id="upload-photo-button" class="button">Carregar Foto</button>
       <button id="open-camera-button" class="button">Abrir Câmera</button>
@@ -378,7 +378,6 @@
     const faceImage = document.getElementById('face');
     const totalUnitsDisplay = document.getElementById('total-units');
     const resetButton = document.getElementById('reset-button');
-    const exportButton = document.getElementById('export-button');
     const importButton = document.getElementById('import-button');
     const newPatientButton = document.getElementById('new-patient-button');
     const undoButton = document.getElementById('undo-button');
@@ -406,6 +405,7 @@
     const capturePhotoButton = document.getElementById('capture-photo-button');
     const closeCameraButton = document.getElementById('close-camera-button');
     let stream = null;
+    const customSaveButton = document.getElementById('custom-save-button');
 
     markingTypeRadios.forEach(radio => {
       radio.addEventListener('change', (e) => {
@@ -427,7 +427,6 @@
     faceContainer.addEventListener('mouseup', stopDragging);
 
     resetButton.addEventListener('click', resetSimulation);
-    exportButton.addEventListener('click', exportPlan);
     importButton.addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', importPlan);
     newPatientButton.addEventListener('click', newPatient);
@@ -435,6 +434,8 @@
     uploadPhotoButton.addEventListener('click', () => photoInput.click());
     photoInput.addEventListener('change', handlePhotoUpload);
     
+    customSaveButton.addEventListener('click', customSavePlan);
+
     openCameraButton.addEventListener('click', openCamera);
     capturePhotoButton.addEventListener('click', capturePhoto);
     closeCameraButton.addEventListener('click', closeCamera);
@@ -620,10 +621,10 @@
       timeSinceApplicationInput.value = `${months} meses e ${days} dias`;
     }
 
-    function exportPlan() {
+    function customSavePlan() {
       const formData = new FormData(patientForm);
       const patientData = Object.fromEntries(formData.entries());
-      
+  
       const data = {
         patient: patientData,
         points: points.map(point => ({
@@ -635,20 +636,39 @@
         totalUnits: totalUnits,
         adjustmentUnits: adjustmentUnits
       };
-      
+  
       const json = JSON.stringify(data);
       const blob = new Blob([json], {type: "application/json"});
-      const url = URL.createObjectURL(blob);
-      
+  
       const sanitizedName = patientData.fullName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
       const birthDate = new Date(patientData.birthDate);
+      const applicationDate = new Date(patientData.applicationDate);
       const formattedBirthDate = birthDate.toISOString().split('T')[0];
-      const fileName = `plano_botox_${sanitizedName}_${formattedBirthDate}.json`;
-      
-      const link = document.createElement('a');
-      link.download = fileName;
-      link.href = url;
-      link.click();
+      const formattedApplicationDate = applicationDate.toISOString().split('T')[0];
+      const defaultFileName = `${sanitizedName}_${formattedBirthDate}_${formattedApplicationDate}.json`;
+  
+      const saveFile = async () => {
+        try {
+          const handle = await window.showSaveFilePicker({
+            suggestedName: defaultFileName,
+            types: [{
+              description: 'JSON Files',
+              accept: {'application/json': ['.json']},
+            }],
+          });
+          const writable = await handle.createWritable();
+          await writable.write(blob);
+          await writable.close();
+          alert('Arquivo salvo com sucesso!');
+        } catch (err) {
+          if (err.name !== 'AbortError') {
+            console.error('Erro ao salvar o arquivo:', err);
+            alert('Ocorreu um erro ao salvar o arquivo. Por favor, tente novamente.');
+          }
+        }
+      };
+
+      saveFile();
     }
 
     function importPlan(event) {

@@ -1,0 +1,521 @@
+<html><head><base href="https://marcarbotox.clinic/" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clínica de Botox - Simulador de Aplicação</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+  }
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  h1, h2 {
+    color: #333;
+    text-align: center;
+  }
+  #face-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+  #face {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .point {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: rgba(0, 123, 255, 0.7);
+    border: 2px solid #007bff;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  .point:hover {
+    transform: scale(1.5);
+  }
+  .point.dragging {
+    transform: scale(1.5);
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.7);
+  }
+  #total-units {
+    text-align: center;
+    font-size: 24px;
+    margin-top: 20px;
+  }
+  .button {
+    display: inline-block;
+    margin: 10px 5px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+  .button:hover {
+    background-color: #0056b3;
+  }
+  .unit-label {
+    position: absolute;
+    color: black;
+    font-size: 14px;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px white;
+  }
+  #button-container {
+    text-align: center;
+    margin-top: 20px;
+  }
+  #file-input {
+    display: none;
+  }
+  #photo-input {
+    display: none;
+  }
+  form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+  }
+  .form-group {
+    margin-bottom: 15px;
+  }
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  input[type="text"],
+  input[type="date"],
+  textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    resize: vertical;
+  }
+  .gender-group {
+    display: flex;
+    gap: 10px;
+  }
+  .gender-group label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  .gender-group input[type="radio"] {
+    margin-right: 5px;
+  }
+  footer {
+    text-align: center;
+    font-size: 12px;
+    color: #666;
+    margin-top: 20px;
+    padding: 10px 0;
+    border-top: 1px solid #ddd;
+  }
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+  }
+  .modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+  }
+  #camera-feed {
+    width: 100%;
+    max-width: 450px;
+    aspect-ratio: 3/4;
+    object-fit: cover;
+    margin-bottom: 20px;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>Simulador de Aplicação de Botox</h1>
+    
+    <form id="patient-form">
+      <h2>Cadastro do Paciente</h2>
+      <div class="form-group">
+        <label for="fullName">Nome completo:</label>
+        <input type="text" id="fullName" name="fullName" required>
+      </div>
+      <div class="form-group">
+        <label>Gênero:</label>
+        <div class="gender-group">
+          <label>
+            <input type="radio" name="gender" value="masculino" required> Masculino
+          </label>
+          <label>
+            <input type="radio" name="gender" value="feminino" required> Feminino
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="birthDate">Data de Nascimento:</label>
+        <input type="date" id="birthDate" name="birthDate" required>
+      </div>
+      <div class="form-group">
+        <label for="age">Idade:</label>
+        <input type="text" id="age" name="age" readonly>
+      </div>
+      <div class="form-group">
+        <label for="applicationDate">Data da Aplicação:</label>
+        <input type="date" id="applicationDate" name="applicationDate" required>
+      </div>
+      <div class="form-group">
+        <label for="timeSinceApplication">Intervalo entre a última aplicação:</label>
+        <input type="text" id="timeSinceApplication" name="timeSinceApplication" readonly>
+      </div>
+      <div class="form-group">
+        <label for="observations">Observações:</label>
+        <textarea id="observations" name="observations" rows="4"></textarea>
+      </div>
+    </form>
+
+    <div id="face-container">
+      <img id="face" src="https://cdn.goconqr.com/uploads/node/image/62603468/desktop_320e31d6-449c-4047-aea9-98bcac1e7aa3.png" alt="Diagrama facial para aplicação de botox" width="600" height="400">
+    </div>
+    <div id="total-units">Total de unidades: 0</div>
+    <div id="button-container">
+      <button id="undo-button" class="button">Desfazer</button>
+      <button id="reset-button" class="button">Reiniciar</button>
+      <button id="export-button" class="button">Exportar Plano</button>
+      <button id="import-button" class="button">Importar Plano</button>
+      <button id="new-patient-button" class="button">Novo Cadastro</button>
+      <button id="upload-photo-button" class="button">Carregar Foto</button>
+      <button id="open-camera-button" class="button">Abrir Câmera</button>
+      <input type="file" id="file-input" accept=".json">
+      <input type="file" id="photo-input" accept="image/*">
+    </div>
+    
+    <div id="camera-modal" class="modal">
+      <div class="modal-content">
+        <video id="camera-feed" autoplay playsinline></video>
+        <canvas id="camera-canvas" style="display:none;"></canvas>
+        <button id="capture-photo-button" class="button">Capturar Foto</button>
+        <button id="close-camera-button" class="button">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const faceContainer = document.getElementById('face-container');
+    const faceImage = document.getElementById('face');
+    const totalUnitsDisplay = document.getElementById('total-units');
+    const resetButton = document.getElementById('reset-button');
+    const exportButton = document.getElementById('export-button');
+    const importButton = document.getElementById('import-button');
+    const newPatientButton = document.getElementById('new-patient-button');
+    const undoButton = document.getElementById('undo-button');
+    const fileInput = document.getElementById('file-input');
+    const photoInput = document.getElementById('photo-input');
+    const uploadPhotoButton = document.getElementById('upload-photo-button');
+    const patientForm = document.getElementById('patient-form');
+    const birthDateInput = document.getElementById('birthDate');
+    const ageInput = document.getElementById('age');
+    const applicationDateInput = document.getElementById('applicationDate');
+    const timeSinceApplicationInput = document.getElementById('timeSinceApplication');
+    const DEFAULT_FACE_IMAGE = "https://cdn.goconqr.com/uploads/node/image/62603468/desktop_320e31d6-449c-4047-aea9-98bcac1e7aa3.png";
+    let points = [];
+    let totalUnits = 0;
+    let isDragging = false;
+    let currentDraggingPoint = null;
+    const openCameraButton = document.getElementById('open-camera-button');
+    const cameraModal = document.getElementById('camera-modal');
+    const cameraFeed = document.getElementById('camera-feed');
+    const cameraCanvas = document.getElementById('camera-canvas');
+    const capturePhotoButton = document.getElementById('capture-photo-button');
+    const closeCameraButton = document.getElementById('close-camera-button');
+    let stream = null;
+
+    faceContainer.addEventListener('mouseup', (e) => {
+      if (!isDragging) {
+        const rect = faceContainer.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        addPoint(x, y);
+      }
+    });
+
+    faceContainer.addEventListener('mousedown', startDragging);
+    faceContainer.addEventListener('mousemove', drag);
+    faceContainer.addEventListener('mouseup', stopDragging);
+
+    resetButton.addEventListener('click', resetSimulation);
+    exportButton.addEventListener('click', exportPlan);
+    importButton.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', importPlan);
+    newPatientButton.addEventListener('click', newPatient);
+    undoButton.addEventListener('click', undoLastPoint);
+    uploadPhotoButton.addEventListener('click', () => photoInput.click());
+    photoInput.addEventListener('change', handlePhotoUpload);
+    
+    openCameraButton.addEventListener('click', openCamera);
+    capturePhotoButton.addEventListener('click', capturePhoto);
+    closeCameraButton.addEventListener('click', closeCamera);
+
+    birthDateInput.addEventListener('change', calculateAge);
+    applicationDateInput.addEventListener('change', calculateTimeSinceApplication);
+
+    function handlePhotoUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          faceImage.src = e.target.result;
+          resetSimulation();
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+    
+    function openCamera() {
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', aspectRatio: 3/4 } })
+        .then((videoStream) => {
+          stream = videoStream;
+          cameraFeed.srcObject = stream;
+          cameraModal.style.display = 'block';
+        })
+        .catch((error) => {
+          console.error('Error accessing camera:', error);
+          alert('Erro ao acessar a câmera. Por favor, verifique as permissões.');
+        });
+    }
+
+    function capturePhoto() {
+      const context = cameraCanvas.getContext('2d');
+      cameraCanvas.width = cameraFeed.videoWidth;
+      cameraCanvas.height = cameraFeed.videoHeight;
+      context.drawImage(cameraFeed, 0, 0, cameraCanvas.width, cameraCanvas.height);
+
+      const capturedImage = cameraCanvas.toDataURL('image/jpeg');
+      faceImage.src = capturedImage;
+      closeCamera();
+      resetSimulation();
+    }
+
+    function closeCamera() {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+      cameraModal.style.display = 'none';
+    }
+
+    function startDragging(e) {
+      const target = e.target;
+      if (target.classList.contains('point')) {
+        isDragging = true;
+        currentDraggingPoint = points.find(p => p.element === target);
+        target.classList.add('dragging');
+      }
+    }
+
+    function drag(e) {
+      if (isDragging && currentDraggingPoint) {
+        const rect = faceContainer.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        currentDraggingPoint.element.style.left = `${x}px`;
+        currentDraggingPoint.element.style.top = `${y}px`;
+        currentDraggingPoint.label.style.left = `${x + 15}px`;
+        currentDraggingPoint.label.style.top = `${y - 20}px`;
+        
+        currentDraggingPoint.x = x;
+        currentDraggingPoint.y = y;
+      }
+    }
+
+    function stopDragging() {
+      if (currentDraggingPoint) {
+        currentDraggingPoint.element.classList.remove('dragging');
+      }
+      isDragging = false;
+      currentDraggingPoint = null;
+    }
+
+    function addPoint(x, y, units = null) {
+      const point = document.createElement('div');
+      point.classList.add('point');
+      point.style.left = `${x}px`;
+      point.style.top = `${y}px`;
+      point.style.cursor = 'move';
+      faceContainer.appendChild(point);
+
+      if (units === null) {
+        units = prompt('Quantas unidades para este ponto?');
+      }
+
+      if (units && !isNaN(units)) {
+        const unitsNum = parseInt(units);
+        totalUnits += unitsNum;
+        
+        const label = document.createElement('div');
+        label.classList.add('unit-label');
+        label.style.left = `${x + 15}px`;
+        label.style.top = `${y - 20}px`;
+        label.textContent = unitsNum;
+        faceContainer.appendChild(label);
+        
+        points.push({ element: point, label: label, x, y, units: unitsNum });
+        updateTotalUnits();
+      } else {
+        faceContainer.removeChild(point);
+      }
+    }
+
+    function undoLastPoint() {
+      if (points.length > 0) {
+        const lastPoint = points.pop();
+        faceContainer.removeChild(lastPoint.element);
+        faceContainer.removeChild(lastPoint.label);
+        totalUnits -= lastPoint.units;
+        updateTotalUnits();
+      }
+    }
+
+    function resetSimulation() {
+      points.forEach(point => {
+        faceContainer.removeChild(point.element);
+        faceContainer.removeChild(point.label);
+      });
+      
+      points = [];
+      totalUnits = 0;
+      updateTotalUnits();
+    }
+
+    function updateTotalUnits() {
+      totalUnitsDisplay.textContent = `Total de unidades: ${totalUnits}`;
+    }
+
+    function calculateAge() {
+      const birthDate = new Date(birthDateInput.value);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      ageInput.value = age;
+    }
+
+    function calculateTimeSinceApplication() {
+      const applicationDate = new Date(applicationDateInput.value);
+      const today = new Date();
+      const diffTime = Math.abs(today - applicationDate);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const months = Math.floor(diffDays / 30);
+      const days = diffDays % 30;
+      timeSinceApplicationInput.value = `${months} meses e ${days} dias`;
+    }
+
+    function exportPlan() {
+      const formData = new FormData(patientForm);
+      const patientData = Object.fromEntries(formData.entries());
+      
+      const data = {
+        patient: patientData,
+        points: points.map(point => ({
+          x: point.x,
+          y: point.y,
+          units: point.units
+        })),
+        totalUnits: totalUnits
+      };
+      
+      const json = JSON.stringify(data);
+      const blob = new Blob([json], {type: "application/json"});
+      const url = URL.createObjectURL(blob);
+      
+      const sanitizedName = patientData.fullName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      const birthDate = new Date(patientData.birthDate);
+      const formattedBirthDate = birthDate.toISOString().split('T')[0];
+      const fileName = `plano_botox_${sanitizedName}_${formattedBirthDate}.json`;
+      
+      const link = document.createElement('a');
+      link.download = fileName;
+      link.href = url;
+      link.click();
+    }
+
+    function importPlan(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          try {
+            const importedData = JSON.parse(e.target.result);
+            resetSimulation();
+            
+            for (const [key, value] of Object.entries(importedData.patient)) {
+              const field = patientForm.elements[key];
+              if (field) {
+                if (field.type === 'radio') {
+                  patientForm.querySelector(`input[name="${key}"][value="${value}"]`).checked = true;
+                } else {
+                  field.value = value;
+                }
+              }
+            }
+            
+            calculateAge();
+            calculateTimeSinceApplication();
+            
+            importedData.points.forEach(point => {
+              addPoint(point.x, point.y, point.units);
+            });
+          } catch (error) {
+            console.error('Erro ao importar o plano:', error);
+            alert('Erro ao importar o plano. Por favor, verifique o arquivo.');
+          }
+        };
+        reader.readAsText(file);
+      }
+    }
+
+    function newPatient() {
+      patientForm.reset();
+      ageInput.value = '';
+      timeSinceApplicationInput.value = '';
+      resetSimulation();
+      faceImage.src = DEFAULT_FACE_IMAGE;
+    }
+  </script>
+<footer>
+  Todos direitos reservados a Ricardo Queiroz & Doctor Channel Produtora
+</footer>
+</body>
+</html>

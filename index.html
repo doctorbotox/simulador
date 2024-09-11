@@ -13,10 +13,40 @@
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
+    padding-top: 60px;
   }
   h1, h2 {
     color: #333;
     text-align: center;
+  }
+  #top-menu-bar {
+    background: linear-gradient(to bottom, #4a4a4a, #2a2a2a);
+    padding: 10px;
+    text-align: left;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  .menu-button {
+    background-color: transparent;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: 15px;
+    padding: 5px 10px;
+    transition: background-color 0.3s ease;
+  }
+  .menu-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  #logout-button {
+    margin-left: auto;
+  }
+  .face-and-menu-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   #face-container {
     position: relative;
@@ -27,11 +57,25 @@
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     overflow: hidden;
+    display: block;
+  }
+  .slider-container {
+    display: none;
+    position: fixed;
+    top: 60px;
+    left: 10px;
+    background-color: white;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+    max-width: 200px;
   }
   #face {
     width: 100%;
     height: auto;
     display: block;
+    transition: transform 0.3s ease;
   }
   .point {
     position: absolute;
@@ -121,17 +165,13 @@
     flex: 1;
     margin-right: 20px;
   }
-  .gender-field {
-    width: 200px;
-  }
   .gender-options {
     display: flex;
-    gap: 10px;
+    gap: 20px;
   }
   .gender-options label {
     display: flex;
     align-items: center;
-    margin-bottom: 0;
   }
   .gender-options input[type="radio"] {
     margin-right: 5px;
@@ -174,6 +214,35 @@
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 30px;
+    max-width: 80%;
+    max-height: 80%;
+    overflow-y: auto;
+    resize: both;
+    overflow: auto;
+    min-width: 300px;
+    min-height: 200px;
+  }
+  .resizable-handle {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 15px;
+    height: 15px;
+    cursor: se-resize;
+    background: linear-gradient(135deg, transparent 50%, #007bff 50%);
+  }
+  .close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .close-button:hover,
+  .close-button:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
   }
   #camera-feed {
     width: 100%;
@@ -182,6 +251,14 @@
     object-fit: cover;
     margin-bottom: 20px;
   }
+  #doctor-channel-info {
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border-radius: 10px;
+  }
   #doctor-channel-info p {
     font-size: 18px;
     color: #333;
@@ -189,8 +266,11 @@
   }
   #doctor-channel-info .button {
     background-color: #28a745;
+    color: white;
     text-decoration: none;
-    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
   }
   #doctor-channel-info .button:hover {
     background-color: #218838;
@@ -222,10 +302,12 @@
     color: #333;
     font-size: 1.5em;
   }
+  #username-input,
+  #email-input,
   #password-input {
     width: 100%;
     padding: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 16px;
@@ -244,64 +326,208 @@
   #submit-password:hover {
     background-color: #0056b3;
   }
+  .slider-container label {
+    display: block;
+    margin-top: 5px; 
+    margin-bottom: 2px; 
+  }
+  .slider-container input[type="range"] {
+    width: 100%;
+    margin-top: 2px; 
+    margin-bottom: 10px; 
+  }
+  .slider-container span {
+    font-size: 12px;
+    color: #666;
+  }
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+  .dropdown-content button {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    width: 100%;
+    text-align: left;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+  }
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+  .dropdown-content button:hover {
+    background-color: #f1f1f1;
+  }
+  #save-plan-button {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+  #save-plan-button:hover {
+    background-color: #218838;
+  }
+  .required::after {
+    content: "*";
+    color: red;
+    margin-left: 3px;
+  }
+  #user-list {
+    margin-bottom: 20px;
+  }
+  .user-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 5px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+  }
+  .user-item button {
+    margin-left: 10px;
+  }
 </style>
 </head>
 <body>
+  <div id="top-menu-bar">
+    <div class="dropdown">
+      <button class="menu-button dropbtn">Paciente</button>
+      <div class="dropdown-content">
+        <button id="patient-registration-button" class="menu-button">Ficha de Cadastro</button>
+        <button id="import-button" class="menu-button">Abrir Plano</button>
+        <button id="new-patient-button" class="menu-button">Novo Cadastro</button>
+      </div>
+    </div>
+    <div class="dropdown">
+      <button class="menu-button dropbtn">Imagem</button>
+      <div class="dropdown-content">
+        <button id="toggle-menu-button" class="menu-button">Ajustar Imagem</button>
+        <button id="upload-photo-button" class="menu-button">Carregar Foto</button>
+        <button id="open-camera-button" class="menu-button">Abrir Câmera</button>
+      </div>
+    </div>
+    <div class="dropdown" style="display: none;">
+      <button class="menu-button dropbtn">Usuários</button>
+      <div class="dropdown-content">
+        <button id="manage-users-button" class="menu-button" disabled>Gerenciar Usuários</button>
+      </div>
+    </div>
+    <button id="logout-button" class="menu-button">Sair</button>
+  </div>
+
+  <div id="patient-registration-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-button">&times;</span>
+      <form id="patient-form">
+        <h2>Ficha de Cadastro</h2>
+        <div class="form-group">
+          <label for="fullName" class="required">Nome completo:</label>
+          <input type="text" id="fullName" name="fullName" required>
+        </div>
+        <div class="form-group">
+          <label class="required">Gênero:</label>
+          <div class="gender-options">
+            <label>
+              <input type="radio" name="gender" value="masculino" required> Masculino
+            </label>
+            <label>
+              <input type="radio" name="gender" value="feminino" required> Feminino
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="birthDate" class="required">Data de Nascimento:</label>
+          <input type="date" id="birthDate" name="birthDate" required>
+          <span class="age-display">Idade: <input type="text" id="age" name="age" readonly></span>
+        </div>
+        <div class="form-group date-group">
+          <div class="date-field">
+            <label for="applicationDate" class="required">Aplicação:</label>
+            <input type="date" id="applicationDate" name="applicationDate" required>
+          </div>
+          <div class="date-field">
+            <label for="adjustmentDate">Ajuste:</label>
+            <input type="date" id="adjustmentDate" name="adjustmentDate">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="timeSinceApplication">Intervalo entre a última aplicação:</label>
+          <input type="text" id="timeSinceApplication" name="timeSinceApplication" readonly>
+        </div>
+        <div class="form-group">
+          <label for="observations">Observações:</label>
+          <textarea id="observations" name="observations" rows="4"></textarea>
+        </div>
+        <div class="form-group" style="text-align: right;">
+          <button type="button" id="save-plan-button" class="button">Salvar Plano</button>
+        </div>
+      </form>
+      <div class="resizable-handle"></div>
+    </div>
+  </div>
+
   <div id="password-modal" class="modal">
     <div class="modal-content">
       <h2>Acesso ao Simulador</h2>
-      <input type="password" id="password-input" placeholder="Digite a senha">
+      <input type="email" id="email-input" placeholder="E-mail">
+      <input type="password" id="password-input" placeholder="Senha">
       <button id="submit-password" class="button">Entrar</button>
     </div>
   </div>
+
+  <div id="user-management-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-button">&times;</span>
+      <h2>Gerenciar Usuários</h2>
+      <div id="user-list"></div>
+      <form id="user-form">
+        <input type="hidden" id="user-id">
+        <div class="form-group">
+          <label for="user-username" class="required">Nome de usuário:</label>
+          <input type="text" id="user-username" required>
+        </div>
+        <div class="form-group">
+          <label for="user-email" class="required">E-mail:</label>
+          <input type="email" id="user-email" required>
+        </div>
+        <div class="form-group">
+          <label for="user-password" class="required">Senha:</label>
+          <input type="password" id="user-password" required>
+        </div>
+        <div class="form-group">
+          <label for="user-password-confirm" class="required">Confirmar Senha:</label>
+          <input type="password" id="user-password-confirm" required>
+        </div>
+        <div class="form-group">
+          <label for="user-role" class="required">Função:</label>
+          <select id="user-role" required>
+            <option value="user">Usuário</option>
+            <option value="admin">Administrador</option>
+          </select>
+        </div>
+        <button type="submit" id="save-user-button" class="button">Salvar Usuário</button>
+      </form>
+    </div>
+  </div>
+
   <div class="container hidden">
     <h1>Planejador de Aplicações de Toxina Botulínica</h1>
-    
-    <form id="patient-form">
-      <h2>Cadastro do Paciente</h2>
-      <div class="form-group">
-        <div class="name-gender-group">
-          <div class="name-field">
-            <label for="fullName">Nome completo:</label>
-            <input type="text" id="fullName" name="fullName" required>
-          </div>
-          <div class="gender-field">
-            <label>Gênero:</label>
-            <div class="gender-options">
-              <label>
-                <input type="radio" name="gender" value="masculino" required> Masculino
-              </label>
-              <label>
-                <input type="radio" name="gender" value="feminino" required> Feminino
-              </label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="birthDate">Data de Nascimento:</label>
-        <input type="date" id="birthDate" name="birthDate" required>
-        <span class="age-display">Idade: <input type="text" id="age" name="age" readonly></span>
-      </div>
-      <div class="form-group date-group">
-        <div class="date-field">
-          <label for="applicationDate">Data da Aplicação:</label>
-          <input type="date" id="applicationDate" name="applicationDate" required>
-        </div>
-        <div class="date-field">
-          <label for="adjustmentDate">Data do Ajuste:</label>
-          <input type="date" id="adjustmentDate" name="adjustmentDate">
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="timeSinceApplication">Intervalo entre a última aplicação:</label>
-        <input type="text" id="timeSinceApplication" name="timeSinceApplication" readonly>
-      </div>
-      <div class="form-group">
-        <label for="observations">Observações:</label>
-        <textarea id="observations" name="observations" rows="4"></textarea>
-      </div>
-    </form>
 
     <div id="marking-type" style="text-align: center; margin-bottom: 20px;">
       <label>
@@ -312,14 +538,27 @@
       </label>
     </div>
 
-    <div id="doctor-channel-info" style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
-      <p>Doctor Channel tv, o canal de tv personalizado para sua sala de espera!</p>
-      <a href="https://wa.me/5531984911827?text=Estou%20usando%20o%20simulador%20de%20botox%20e%20gostaria%20de%20saber%20mais%20sobre%20o%20Doctor%20Channel" target="_blank" class="button">Clique Aqui e Saiba Mais</a>
+    <div class="slider-container" style="display: none;">
+      <label for="zoom-slider">Zoom: <span id="zoom-value">100%</span></label>
+      <input type="range" id="zoom-slider" min="50" max="150" value="100">
+      
+      <label for="horizontal-slider">Horizontal: <span id="horizontal-value">0px</span></label>
+      <input type="range" id="horizontal-slider" min="-50" max="50" value="0">
+      
+      <label for="vertical-slider">Vertical: <span id="vertical-value">0px</span></label>
+      <input type="range" id="vertical-slider" min="-50" max="50" value="0">
+      
+      <label for="rotate-slider">Rotação: <span id="rotate-value">0°</span></label>
+      <input type="range" id="rotate-slider" min="-180" max="180" value="0">
     </div>
 
-    <div id="face-container">
-      <img id="face" src="https://cdn.goconqr.com/uploads/node/image/62603468/desktop_320e31d6-449c-4047-aea9-98bcac1e7aa3.png" alt="Diagrama facial para aplicação de botox" width="600" height="400">
+    <div class="face-and-menu-container">
+      <div id="face-container">
+        <img id="face" src="https://cdn.goconqr.com/uploads/node/image/62603468/desktop_320e31d6-449c-4047-aea9-98bcac1e7aa3.png" alt="Diagrama facial para aplicação de botox" width="600" height="400">
+      </div>
     </div>
+    <div id="patient-name-display" style="text-align: center; margin-top: 10px; font-weight: bold;"></div>
+
     <div id="total-units">
       <div>Total de unidades (Tratamento): <span id="treatment-total">0,0</span></div>
       <div>Total de unidades (Ajuste): <span id="adjustment-total">0,0</span></div>
@@ -329,14 +568,10 @@
       <button id="undo-button" class="button">Desfazer</button>
       <button id="reset-button" class="button">Reiniciar</button>
       <button id="custom-save-button" class="button">Salvar Plano</button>
-      <button id="import-button" class="button">Abrir Plano</button>
-      <button id="new-patient-button" class="button">Novo Cadastro</button>
-      <button id="upload-photo-button" class="button">Carregar Foto</button>
-      <button id="open-camera-button" class="button">Abrir Câmera</button>
       <input type="file" id="file-input" accept=".json">
       <input type="file" id="photo-input" accept="image/*">
     </div>
-    
+
     <div id="camera-modal" class="modal">
       <div class="modal-content">
         <video id="camera-feed" autoplay playsinline></video>
@@ -347,32 +582,182 @@
     </div>
   </div>
 
+  <div id="doctor-channel-info" style="text-align: center; margin-top: 40px; margin-bottom: 20px;">
+    <p>Doctor Channel tv, o canal de tv personalizado para sua sala de espera!</p>
+    <a href="https://wa.me/5531984911827?text=Estou%20usando%20o%20simulador%20de%20botox%20e%20gostaria%20de%20saber%20mais%20sobre%20o%20Doctor%20Channel" target="_blank" class="button">Clique Aqui e Saiba Mais</a>
+  </div>
+
   <script>
+    let currentUserRole = null;
+    function validateForm() {
+      const requiredFields = [
+        { id: 'fullName', name: 'Nome completo' },
+        { id: 'gender', name: 'Gênero' },
+        { id: 'birthDate', name: 'Data de Nascimento' },
+        { id: 'applicationDate', name: 'Data de Aplicação' }
+      ];
+
+      const missingFields = [];
+
+      requiredFields.forEach(field => {
+        const element = document.getElementById(field.id);
+        if (field.id === 'gender') {
+          const genderChecked = document.querySelector('input[name="gender"]:checked');
+          if (!genderChecked) {
+            missingFields.push(field.name);
+          }
+        } else if (!element.value.trim()) {
+          missingFields.push(field.name);
+        }
+      });
+
+      if (adjustmentDateInput.required && !adjustmentDateInput.value.trim()) {
+        missingFields.push('Data de Ajuste');
+      }
+
+      return missingFields;
+    }
+
+    function customSavePlan() {
+      const missingFields = validateForm();
+
+      if (missingFields.length > 0) {
+        alert(`Por favor, preencha os seguintes campos obrigatórios:\n${missingFields.join('\n')}`);
+        return;
+      }
+
+      const formData = new FormData(document.getElementById('patient-form'));
+      const patientData = Object.fromEntries(formData.entries());
+
+      updatePatientNameDisplay(patientData.fullName);
+
+      const data = {
+        patient: patientData,
+        points: points.map(point => ({
+          x: point.x,
+          y: point.y,
+          units: point.label.textContent,
+          type: point.type
+        })),
+        totalUnits: totalUnits,
+        adjustmentUnits: adjustmentUnits,
+        imageAdjustments: {
+          zoom: document.getElementById('zoom-slider').value,
+          horizontal: document.getElementById('horizontal-slider').value,
+          vertical: document.getElementById('vertical-slider').value,
+          rotate: document.getElementById('rotate-slider').value
+        }
+      };
+
+      const json = JSON.stringify(data);
+      const blob = new Blob([json], {type: "application/json"});
+
+      const sanitizedName = patientData.fullName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      const birthDate = new Date(patientData.birthDate);
+      const applicationDate = new Date(patientData.applicationDate);
+      const formattedBirthDate = birthDate.toISOString().split('T')[0];
+      const formattedApplicationDate = applicationDate.toISOString().split('T')[0];
+      const defaultFileName = `${sanitizedName}_${formattedBirthDate}_${formattedApplicationDate}.json`;
+
+      const saveFile = async () => {
+        try {
+          const handle = await window.showSaveFilePicker({
+            suggestedName: defaultFileName,
+            types: [{
+              description: 'JSON Files',
+              accept: {'application/json': ['.json']},
+            }],
+          });
+          const writable = await handle.createWritable();
+          await writable.write(blob);
+          await writable.close();
+          alert('Arquivo salvo com sucesso!');
+        } catch (err) {
+          if (err.name !== 'AbortError') {
+            console.error('Erro ao salvar o arquivo:', err);
+            alert('Ocorreu um erro ao salvar o arquivo. Por favor, tente novamente.');
+          }
+        }
+      };
+
+      saveFile();
+    }
+
     const passwordModal = document.getElementById('password-modal');
+    const emailInput = document.getElementById('email-input');
     const passwordInput = document.getElementById('password-input');
     const submitPasswordButton = document.getElementById('submit-password');
     const simulatorContent = document.querySelector('.container');
 
-    simulatorContent.classList.add('hidden');
-    passwordModal.style.display = 'block';
-
     submitPasswordButton.addEventListener('click', checkPassword);
 
     function checkPassword() {
-      if (passwordInput.value === '1212') {
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      console.log('Attempting login with:', emailInput.value);
+      console.log('Available users:', users);
+      const user = users.find(u => 
+        u.email === emailInput.value && 
+        u.password === passwordInput.value
+      );
+
+      if (user) {
         passwordModal.style.display = 'none';
         simulatorContent.classList.remove('hidden');
+        currentUserRole = user.role; 
+        updateMenuVisibility(); 
       } else {
-        alert('Senha incorreta. Tente novamente.');
+        alert('Credenciais incorretas. Por favor, verifique e tente novamente.');
+        emailInput.value = '';
         passwordInput.value = '';
       }
     }
 
-    passwordInput.addEventListener('keyup', function(event) {
-      if (event.key === 'Enter') {
-        checkPassword();
+    function updateMenuVisibility() {
+      const usersDropdown = document.querySelector('.dropdown:nth-child(3)');
+      if (currentUserRole === 'admin') {
+        usersDropdown.style.display = 'inline-block';
+        manageUsersButton.disabled = false;
+      } else {
+        usersDropdown.style.display = 'none';
+        manageUsersButton.disabled = true;
       }
+    }
+
+    function logout() {
+      resetSimulation();
+      newPatient();
+      
+      simulatorContent.classList.add('hidden');
+      
+      passwordModal.style.display = 'block';
+      
+      emailInput.value = '';
+      passwordInput.value = '';
+      
+      currentUserRole = null;
+      updateMenuVisibility();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeUsers();
+      updateMenuVisibility();
+      simulatorContent.classList.add('hidden');
+      passwordModal.style.display = 'block';
     });
+
+    function initializeUsers() {
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      if (users.length === 0) {
+        const defaultAdmin = {
+          id: Date.now(),
+          username: 'Ricardo',
+          email: 'abreuqueiroz@gmail.com',
+          password: '121212',
+          role: 'admin'
+        };
+        localStorage.setItem('users', JSON.stringify([defaultAdmin]));
+      }
+    }
 
     const faceContainer = document.getElementById('face-container');
     const faceImage = document.getElementById('face');
@@ -407,6 +792,51 @@
     let stream = null;
     const customSaveButton = document.getElementById('custom-save-button');
 
+    const toggleMenuButton = document.getElementById('toggle-menu-button');
+    const patientRegistrationButton = document.getElementById('patient-registration-button');
+    const patientRegistrationModal = document.getElementById('patient-registration-modal');
+    const closePatientRegistrationButton = patientRegistrationModal.querySelector('.close-button');
+    const sliderContainer = document.querySelector('.slider-container');
+
+    toggleMenuButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      sliderContainer.style.display = sliderContainer.style.display === 'none' ? 'block' : 'none';
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!sliderContainer.contains(event.target) && 
+          !event.target.matches('.dropbtn') && 
+          !event.target.closest('.dropdown-content')) {
+        sliderContainer.style.display = 'none';
+      }
+    });
+
+    patientRegistrationButton.addEventListener('click', () => {
+      patientRegistrationModal.style.display = 'block';
+    });
+
+    closePatientRegistrationButton.addEventListener('click', () => {
+      patientRegistrationModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (event) => {
+      if (event.target === patientRegistrationModal) {
+        patientRegistrationModal.style.display = 'none';
+      }
+    });
+
+    const closeUserManagementButton = document.querySelector('#user-management-modal .close-button');
+
+    closeUserManagementButton.addEventListener('click', () => {
+      document.getElementById('user-management-modal').style.display = 'none';
+    });
+
+    window.addEventListener('click', (event) => {
+      if (event.target === userManagementModal) {
+        userManagementModal.style.display = 'none';
+      }
+    });
+
     markingTypeRadios.forEach(radio => {
       radio.addEventListener('change', (e) => {
         currentMarkingType = e.target.value;
@@ -428,13 +858,21 @@
 
     resetButton.addEventListener('click', resetSimulation);
     importButton.addEventListener('click', () => fileInput.click());
+
+    newPatientButton.addEventListener('click', () => {
+      if (confirm('Tem certeza que deseja iniciar um novo cadastro? Todos os dados não salvos serão perdidos.')) {
+        newPatient();
+        patientRegistrationModal.style.display = 'block'; // Open the registration modal
+      }
+    });
+
     fileInput.addEventListener('change', importPlan);
-    newPatientButton.addEventListener('click', newPatient);
     undoButton.addEventListener('click', undoLastPoint);
     uploadPhotoButton.addEventListener('click', () => photoInput.click());
     photoInput.addEventListener('change', handlePhotoUpload);
     
     customSaveButton.addEventListener('click', customSavePlan);
+    document.getElementById('save-plan-button').addEventListener('click', customSavePlan);
 
     openCameraButton.addEventListener('click', openCamera);
     capturePhotoButton.addEventListener('click', capturePhoto);
@@ -443,12 +881,24 @@
     birthDateInput.addEventListener('change', calculateAge);
     applicationDateInput.addEventListener('change', calculateTimeSinceApplication);
 
+    [document.getElementById('zoom-slider'), document.getElementById('horizontal-slider'), document.getElementById('vertical-slider'), document.getElementById('rotate-slider')].forEach(slider => {
+      slider.addEventListener('input', () => {
+        updateImageTransform();
+        updatePointsPosition();
+        updateSliderValues();
+      });
+    });
+
     function handlePhotoUpload(event) {
       const file = event.target.files[0];
       if (file) {
         const reader = new FileReader();
         reader.onload = function(e) {
           faceImage.src = e.target.result;
+          faceImage.onload = function() {
+            updateImageTransform();
+            updatePointsPosition();
+          };
           resetSimulation();
         };
         reader.readAsDataURL(file);
@@ -485,6 +935,19 @@
         stream.getTracks().forEach(track => track.stop());
       }
       cameraModal.style.display = 'none';
+    }
+
+    function updateImageTransform() {
+      const zoom = document.getElementById('zoom-slider').value / 100;
+      const horizontalMove = document.getElementById('horizontal-slider').value;
+      const verticalMove = document.getElementById('vertical-slider').value;
+      const rotate = document.getElementById('rotate-slider').value;
+
+      faceImage.style.transform = `
+        scale(${zoom})
+        translate(${horizontalMove}px, ${verticalMove}px)
+        rotate(${rotate}deg)
+      `;
     }
 
     function startDragging(e) {
@@ -591,6 +1054,13 @@
       adjustmentUnits = 0;
       updateTotalUnits();
       updateAdjustmentDateRequirement();
+
+      faceImage.style.transform = 'none';
+      document.getElementById('zoom-slider').value = 100;
+      document.getElementById('horizontal-slider').value = 0;
+      document.getElementById('vertical-slider').value = 0;
+      document.getElementById('rotate-slider').value = 0;
+      updateSliderValues();
     }
 
     function updateTotalUnits() {
@@ -598,6 +1068,21 @@
       document.getElementById('adjustment-total').textContent = adjustmentUnits.toFixed(1).replace('.', ',');
       const overallTotal = (totalUnits + adjustmentUnits).toFixed(1).replace('.', ',');
       document.getElementById('overall-total').textContent = overallTotal;
+    }
+
+    function updatePointsPosition() {
+      const imageRect = faceImage.getBoundingClientRect();
+      const containerRect = faceContainer.getBoundingClientRect();
+
+      points.forEach(point => {
+        const x = (point.x / containerRect.width) * imageRect.width + imageRect.left - containerRect.left;
+        const y = (point.y / containerRect.height) * imageRect.height + imageRect.top - containerRect.top;
+
+        point.element.style.left = `${x}px`;
+        point.element.style.top = `${y}px`;
+        point.label.style.left = `${x + 15}px`;
+        point.label.style.top = `${y - 20}px`;
+      });
     }
 
     function calculateAge() {
@@ -622,9 +1107,18 @@
     }
 
     function customSavePlan() {
-      const formData = new FormData(patientForm);
+      const missingFields = validateForm();
+
+      if (missingFields.length > 0) {
+        alert(`Por favor, preencha os seguintes campos obrigatórios:\n${missingFields.join('\n')}`);
+        return;
+      }
+
+      const formData = new FormData(document.getElementById('patient-form'));
       const patientData = Object.fromEntries(formData.entries());
-  
+
+      updatePatientNameDisplay(patientData.fullName);
+
       const data = {
         patient: patientData,
         points: points.map(point => ({
@@ -634,19 +1128,25 @@
           type: point.type
         })),
         totalUnits: totalUnits,
-        adjustmentUnits: adjustmentUnits
+        adjustmentUnits: adjustmentUnits,
+        imageAdjustments: {
+          zoom: document.getElementById('zoom-slider').value,
+          horizontal: document.getElementById('horizontal-slider').value,
+          vertical: document.getElementById('vertical-slider').value,
+          rotate: document.getElementById('rotate-slider').value
+        }
       };
-  
+
       const json = JSON.stringify(data);
       const blob = new Blob([json], {type: "application/json"});
-  
+
       const sanitizedName = patientData.fullName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
       const birthDate = new Date(patientData.birthDate);
       const applicationDate = new Date(patientData.applicationDate);
       const formattedBirthDate = birthDate.toISOString().split('T')[0];
       const formattedApplicationDate = applicationDate.toISOString().split('T')[0];
       const defaultFileName = `${sanitizedName}_${formattedBirthDate}_${formattedApplicationDate}.json`;
-  
+
       const saveFile = async () => {
         try {
           const handle = await window.showSaveFilePicker({
@@ -691,6 +1191,8 @@
               }
             }
             
+            updatePatientNameDisplay(importedData.patient.fullName);
+            
             calculateAge();
             calculateTimeSinceApplication();
             
@@ -698,6 +1200,13 @@
               addPoint(point.x, point.y, point.units, point.type || 'treatment');
             });
             
+            if (importedData.imageAdjustments) {
+              applyImageAdjustments(importedData.imageAdjustments);
+            } else {
+              updateImageTransform();
+            }
+            
+            updatePointsPosition();
             updateAdjustmentDateRequirement();
           } catch (error) {
             console.error('Erro ao importar o plano:', error);
@@ -708,13 +1217,187 @@
       }
     }
 
+    function applyImageAdjustments(adjustments) {
+      document.getElementById('zoom-slider').value = adjustments.zoom;
+      document.getElementById('horizontal-slider').value = adjustments.horizontal;
+      document.getElementById('vertical-slider').value = adjustments.vertical;
+      document.getElementById('rotate-slider').value = adjustments.rotate;
+
+      updateImageTransform();
+      updatePointsPosition();
+      updateSliderValues();
+    }
+
     function newPatient() {
       patientForm.reset();
       ageInput.value = '';
       timeSinceApplicationInput.value = '';
+
       resetSimulation();
+
       faceImage.src = DEFAULT_FACE_IMAGE;
+
+      photoInput.value = '';
+
+      document.getElementById('zoom-slider').value = 100;
+      document.getElementById('horizontal-slider').value = 0;
+      document.getElementById('vertical-slider').value = 0;
+      document.getElementById('rotate-slider').value = 0;
+
+      updateImageTransform();
+      updateSliderValues();
+
       adjustmentDateInput.required = false;
+
+      updatePatientNameDisplay('');
+    }
+
+    function updateSliderValues() {
+      document.getElementById('zoom-value').textContent = `${document.getElementById('zoom-slider').value}%`;
+      document.getElementById('horizontal-value').textContent = `${document.getElementById('horizontal-slider').value}px`;
+      document.getElementById('vertical-value').textContent = `${document.getElementById('vertical-slider').value}px`;
+      document.getElementById('rotate-value').textContent = `${document.getElementById('rotate-slider').value}°`;
+    }
+
+    function updatePatientNameDisplay(name) {
+      const patientNameDisplay = document.getElementById('patient-name-display');
+      patientNameDisplay.textContent = name ? `Paciente: ${name}` : '';
+    }
+
+    updateSliderValues();
+
+    const userManagementModal = document.getElementById('user-management-modal');
+    const manageUsersButton = document.getElementById('manage-users-button');
+    const userList = document.getElementById('user-list');
+    const userForm = document.getElementById('user-form');
+    const userIdInput = document.getElementById('user-id');
+    const userUsernameInput = document.getElementById('user-username');
+    const userEmailInput = document.getElementById('user-email');
+    const userPasswordInput = document.getElementById('user-password');
+    const userPasswordConfirmInput = document.getElementById('user-password-confirm');
+    const userRoleInput = document.getElementById('user-role');
+    const saveUserButton = document.getElementById('save-user-button');
+
+    manageUsersButton.addEventListener('click', openUserManagement);
+    userForm.addEventListener('submit', saveUser);
+
+    function openUserManagement() {
+      userManagementModal.style.display = 'block';
+      refreshUserList();
+    }
+
+    function refreshUserList() {
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      userList.innerHTML = '';
+      users.forEach(user => {
+        const userItem = document.createElement('div');
+        userItem.className = 'user-item';
+        userItem.innerHTML = `
+          <span>${user.username} (${user.email}) - ${user.role === 'admin' ? 'Administrador' : 'Usuário'}</span>
+          <div>
+            <button onclick="editUser(${user.id})">Editar</button>
+            <button onclick="deleteUser(${user.id})">Excluir</button>
+          </div>
+        `;
+        userList.appendChild(userItem);
+      });
+    }
+
+    function saveUser(e) {
+      e.preventDefault();
+      
+      const password = userPasswordInput.value;
+      const confirmPassword = userPasswordConfirmInput.value;
+      
+      if (password !== confirmPassword) {
+        alert('As senhas não coincidem. Por favor, verifique e tente novamente.');
+        return;
+      }
+
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const user = {
+        id: userIdInput.value ? parseInt(userIdInput.value) : Date.now(),
+        username: userUsernameInput.value,
+        email: userEmailInput.value,
+        password: password,
+        role: userRoleInput.value
+      };
+
+      if (userIdInput.value) {
+        const index = users.findIndex(u => u.id === user.id);
+        users[index] = user;
+      } else {
+        users.push(user);
+      }
+
+      localStorage.setItem('users', JSON.stringify(users));
+      refreshUserList();
+      resetUserForm();
+
+      setTimeout(() => {
+        askSaveAnotherUser();
+      }, 100);
+    }
+
+    function askSaveAnotherUser() {
+      if (confirm('Usuário salvo com sucesso. Deseja adicionar outro usuário?')) {
+        resetUserForm();
+      } else {
+        userManagementModal.style.display = 'none';
+      }
+    }
+
+    function editUser(id) {
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const user = users.find(u => u.id === id);
+      if (user) {
+        userIdInput.value = user.id;
+        userUsernameInput.value = user.username;
+        userEmailInput.value = user.email;
+        userPasswordInput.value = user.password;
+        userPasswordConfirmInput.value = user.password;
+        userRoleInput.value = user.role;
+      }
+    }
+
+    function deleteUser(id) {
+      if (confirm('Tem certeza que deseja excluir este usuário?')) {
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        const updatedUsers = users.filter(u => u.id !== id);
+        localStorage.setItem('users', JSON.stringify(updatedUsers));
+        refreshUserList();
+      }
+    }
+
+    function resetUserForm() {
+      userIdInput.value = '';
+      userUsernameInput.value = '';
+      userEmailInput.value = '';
+      userPasswordInput.value = '';
+      userPasswordConfirmInput.value = '';
+      userRoleInput.value = 'user';
+    }
+
+    initializeUsers();
+
+    const logoutButton = document.getElementById('logout-button');
+
+    logoutButton.addEventListener('click', () => {
+      if (confirm('Tem certeza que deseja sair? Todos os dados não salvos serão perdidos.')) {
+        logout();
+      }
+    });
+
+    function logout() {
+      resetSimulation();
+      newPatient();
+      
+      simulatorContent.classList.add('hidden');
+      
+      passwordModal.style.display = 'block';
+      
+      emailInput.value = '';
+      passwordInput.value = '';
     }
   </script>
 <footer>

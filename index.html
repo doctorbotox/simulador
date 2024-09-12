@@ -40,9 +40,6 @@
   .menu-button:hover {
     background-color: rgba(255, 255, 255, 0.2);
   }
-  #logout-button {
-    margin-left: auto;
-  }
   .face-and-menu-container {
     display: flex;
     justify-content: center;
@@ -58,18 +55,6 @@
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     overflow: hidden;
     display: block;
-  }
-  .slider-container {
-    display: none;
-    position: fixed;
-    top: 60px;
-    left: 10px;
-    background-color: white;
-    padding: 15px;
-    border-radius: 5px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    z-index: 1001;
-    max-width: 200px;
   }
   #face {
     width: 100%;
@@ -422,13 +407,6 @@
         <button id="open-camera-button" class="menu-button">Abrir Câmera</button>
       </div>
     </div>
-    <div class="dropdown" style="display: none;">
-      <button class="menu-button dropbtn">Usuários</button>
-      <div class="dropdown-content">
-        <button id="manage-users-button" class="menu-button" disabled>Gerenciar Usuários</button>
-      </div>
-    </div>
-    <button id="logout-button" class="menu-button">Sair</button>
   </div>
 
   <div id="patient-registration-modal" class="modal">
@@ -482,55 +460,11 @@
     </div>
   </div>
 
-  <div id="password-modal" class="modal">
-    <div class="modal-content">
-      <h2>Acesso ao Simulador</h2>
-      <input type="email" id="email-input" placeholder="E-mail">
-      <input type="password" id="password-input" placeholder="Senha">
-      <button id="submit-password" class="button">Entrar</button>
-    </div>
-  </div>
+  <div class="container">
+    <h1>Planejador de Toxina</h1>
 
-  <div id="user-management-modal" class="modal">
-    <div class="modal-content">
-      <span class="close-button">&times;</span>
-      <h2>Gerenciar Usuários</h2>
-      <div id="user-list"></div>
-      <form id="user-form">
-        <input type="hidden" id="user-id">
-        <div class="form-group">
-          <label for="user-username" class="required">Nome de usuário:</label>
-          <input type="text" id="user-username" required>
-        </div>
-        <div class="form-group">
-          <label for="user-email" class="required">E-mail:</label>
-          <input type="email" id="user-email" required>
-        </div>
-        <div class="form-group">
-          <label for="user-password" class="required">Senha:</label>
-          <input type="password" id="user-password" required>
-        </div>
-        <div class="form-group">
-          <label for="user-password-confirm" class="required">Confirmar Senha:</label>
-          <input type="password" id="user-password-confirm" required>
-        </div>
-        <div class="form-group">
-          <label for="user-role" class="required">Função:</label>
-          <select id="user-role" required>
-            <option value="user">Usuário</option>
-            <option value="admin">Administrador</option>
-          </select>
-        </div>
-        <button type="submit" id="save-user-button" class="button">Salvar Usuário</button>
-      </form>
-    </div>
-  </div>
-
-  <div class="container hidden">
-    <h1>Planejador de Aplicações de Toxina Botulínica</h1>
-
-    <div id="marking-type" style="text-align: center; margin-bottom: 20px;">
-      <label>
+    <div id="marking-type" style="text-align: center; margin-bottom: 20px; display: flex; justify-content: center; align-items: center;">
+      <label style="margin-right: 20px;">
         <input type="radio" name="marking-type" value="treatment" checked> Tratamento
       </label>
       <label>
@@ -588,7 +522,6 @@
   </div>
 
   <script>
-    let currentUserRole = null;
     function validateForm() {
       const requiredFields = [
         { id: 'fullName', name: 'Nome completo' },
@@ -629,6 +562,7 @@
       const formData = new FormData(document.getElementById('patient-form'));
       const patientData = Object.fromEntries(formData.entries());
 
+      // Update patient name display
       updatePatientNameDisplay(patientData.fullName);
 
       const data = {
@@ -681,82 +615,6 @@
       };
 
       saveFile();
-    }
-
-    const passwordModal = document.getElementById('password-modal');
-    const emailInput = document.getElementById('email-input');
-    const passwordInput = document.getElementById('password-input');
-    const submitPasswordButton = document.getElementById('submit-password');
-    const simulatorContent = document.querySelector('.container');
-
-    submitPasswordButton.addEventListener('click', checkPassword);
-
-    function checkPassword() {
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      console.log('Attempting login with:', emailInput.value);
-      console.log('Available users:', users);
-      const user = users.find(u => 
-        u.email === emailInput.value && 
-        u.password === passwordInput.value
-      );
-
-      if (user) {
-        passwordModal.style.display = 'none';
-        simulatorContent.classList.remove('hidden');
-        currentUserRole = user.role; 
-        updateMenuVisibility(); 
-      } else {
-        alert('Credenciais incorretas. Por favor, verifique e tente novamente.');
-        emailInput.value = '';
-        passwordInput.value = '';
-      }
-    }
-
-    function updateMenuVisibility() {
-      const usersDropdown = document.querySelector('.dropdown:nth-child(3)');
-      if (currentUserRole === 'admin') {
-        usersDropdown.style.display = 'inline-block';
-        manageUsersButton.disabled = false;
-      } else {
-        usersDropdown.style.display = 'none';
-        manageUsersButton.disabled = true;
-      }
-    }
-
-    function logout() {
-      resetSimulation();
-      newPatient();
-      
-      simulatorContent.classList.add('hidden');
-      
-      passwordModal.style.display = 'block';
-      
-      emailInput.value = '';
-      passwordInput.value = '';
-      
-      currentUserRole = null;
-      updateMenuVisibility();
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      initializeUsers();
-      updateMenuVisibility();
-      simulatorContent.classList.add('hidden');
-      passwordModal.style.display = 'block';
-    });
-
-    function initializeUsers() {
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      if (users.length === 0) {
-        const defaultAdmin = {
-          id: Date.now(),
-          username: 'Ricardo',
-          email: 'abreuqueiroz@gmail.com',
-          password: '121212',
-          role: 'admin'
-        };
-        localStorage.setItem('users', JSON.stringify([defaultAdmin]));
-      }
     }
 
     const faceContainer = document.getElementById('face-container');
@@ -822,18 +680,6 @@
     window.addEventListener('click', (event) => {
       if (event.target === patientRegistrationModal) {
         patientRegistrationModal.style.display = 'none';
-      }
-    });
-
-    const closeUserManagementButton = document.querySelector('#user-management-modal .close-button');
-
-    closeUserManagementButton.addEventListener('click', () => {
-      document.getElementById('user-management-modal').style.display = 'none';
-    });
-
-    window.addEventListener('click', (event) => {
-      if (event.target === userManagementModal) {
-        userManagementModal.style.display = 'none';
       }
     });
 
@@ -1106,71 +952,6 @@
       timeSinceApplicationInput.value = `${months} meses e ${days} dias`;
     }
 
-    function customSavePlan() {
-      const missingFields = validateForm();
-
-      if (missingFields.length > 0) {
-        alert(`Por favor, preencha os seguintes campos obrigatórios:\n${missingFields.join('\n')}`);
-        return;
-      }
-
-      const formData = new FormData(document.getElementById('patient-form'));
-      const patientData = Object.fromEntries(formData.entries());
-
-      updatePatientNameDisplay(patientData.fullName);
-
-      const data = {
-        patient: patientData,
-        points: points.map(point => ({
-          x: point.x,
-          y: point.y,
-          units: point.label.textContent,
-          type: point.type
-        })),
-        totalUnits: totalUnits,
-        adjustmentUnits: adjustmentUnits,
-        imageAdjustments: {
-          zoom: document.getElementById('zoom-slider').value,
-          horizontal: document.getElementById('horizontal-slider').value,
-          vertical: document.getElementById('vertical-slider').value,
-          rotate: document.getElementById('rotate-slider').value
-        }
-      };
-
-      const json = JSON.stringify(data);
-      const blob = new Blob([json], {type: "application/json"});
-
-      const sanitizedName = patientData.fullName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-      const birthDate = new Date(patientData.birthDate);
-      const applicationDate = new Date(patientData.applicationDate);
-      const formattedBirthDate = birthDate.toISOString().split('T')[0];
-      const formattedApplicationDate = applicationDate.toISOString().split('T')[0];
-      const defaultFileName = `${sanitizedName}_${formattedBirthDate}_${formattedApplicationDate}.json`;
-
-      const saveFile = async () => {
-        try {
-          const handle = await window.showSaveFilePicker({
-            suggestedName: defaultFileName,
-            types: [{
-              description: 'JSON Files',
-              accept: {'application/json': ['.json']},
-            }],
-          });
-          const writable = await handle.createWritable();
-          await writable.write(blob);
-          await writable.close();
-          alert('Arquivo salvo com sucesso!');
-        } catch (err) {
-          if (err.name !== 'AbortError') {
-            console.error('Erro ao salvar o arquivo:', err);
-            alert('Ocorreu um erro ao salvar o arquivo. Por favor, tente novamente.');
-          }
-        }
-      };
-
-      saveFile();
-    }
-
     function importPlan(event) {
       const file = event.target.files[0];
       if (file) {
@@ -1191,6 +972,7 @@
               }
             }
             
+            // Update patient name display
             updatePatientNameDisplay(importedData.patient.fullName);
             
             calculateAge();
@@ -1200,6 +982,7 @@
               addPoint(point.x, point.y, point.units, point.type || 'treatment');
             });
             
+            // Apply image adjustments
             if (importedData.imageAdjustments) {
               applyImageAdjustments(importedData.imageAdjustments);
             } else {
@@ -1229,26 +1012,34 @@
     }
 
     function newPatient() {
+      // Clear all form fields
       patientForm.reset();
       ageInput.value = '';
       timeSinceApplicationInput.value = '';
 
+      // Reset simulation
       resetSimulation();
 
+      // Reset face image to default
       faceImage.src = DEFAULT_FACE_IMAGE;
 
+      // Clear any uploaded photo
       photoInput.value = '';
 
+      // Reset image adjustments
       document.getElementById('zoom-slider').value = 100;
       document.getElementById('horizontal-slider').value = 0;
       document.getElementById('vertical-slider').value = 0;
       document.getElementById('rotate-slider').value = 0;
 
+      // Apply reset adjustments
       updateImageTransform();
       updateSliderValues();
 
+      // Reset adjustment date requirement
       adjustmentDateInput.required = false;
 
+      // Clear patient name display
       updatePatientNameDisplay('');
     }
 
@@ -1265,140 +1056,6 @@
     }
 
     updateSliderValues();
-
-    const userManagementModal = document.getElementById('user-management-modal');
-    const manageUsersButton = document.getElementById('manage-users-button');
-    const userList = document.getElementById('user-list');
-    const userForm = document.getElementById('user-form');
-    const userIdInput = document.getElementById('user-id');
-    const userUsernameInput = document.getElementById('user-username');
-    const userEmailInput = document.getElementById('user-email');
-    const userPasswordInput = document.getElementById('user-password');
-    const userPasswordConfirmInput = document.getElementById('user-password-confirm');
-    const userRoleInput = document.getElementById('user-role');
-    const saveUserButton = document.getElementById('save-user-button');
-
-    manageUsersButton.addEventListener('click', openUserManagement);
-    userForm.addEventListener('submit', saveUser);
-
-    function openUserManagement() {
-      userManagementModal.style.display = 'block';
-      refreshUserList();
-    }
-
-    function refreshUserList() {
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      userList.innerHTML = '';
-      users.forEach(user => {
-        const userItem = document.createElement('div');
-        userItem.className = 'user-item';
-        userItem.innerHTML = `
-          <span>${user.username} (${user.email}) - ${user.role === 'admin' ? 'Administrador' : 'Usuário'}</span>
-          <div>
-            <button onclick="editUser(${user.id})">Editar</button>
-            <button onclick="deleteUser(${user.id})">Excluir</button>
-          </div>
-        `;
-        userList.appendChild(userItem);
-      });
-    }
-
-    function saveUser(e) {
-      e.preventDefault();
-      
-      const password = userPasswordInput.value;
-      const confirmPassword = userPasswordConfirmInput.value;
-      
-      if (password !== confirmPassword) {
-        alert('As senhas não coincidem. Por favor, verifique e tente novamente.');
-        return;
-      }
-
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const user = {
-        id: userIdInput.value ? parseInt(userIdInput.value) : Date.now(),
-        username: userUsernameInput.value,
-        email: userEmailInput.value,
-        password: password,
-        role: userRoleInput.value
-      };
-
-      if (userIdInput.value) {
-        const index = users.findIndex(u => u.id === user.id);
-        users[index] = user;
-      } else {
-        users.push(user);
-      }
-
-      localStorage.setItem('users', JSON.stringify(users));
-      refreshUserList();
-      resetUserForm();
-
-      setTimeout(() => {
-        askSaveAnotherUser();
-      }, 100);
-    }
-
-    function askSaveAnotherUser() {
-      if (confirm('Usuário salvo com sucesso. Deseja adicionar outro usuário?')) {
-        resetUserForm();
-      } else {
-        userManagementModal.style.display = 'none';
-      }
-    }
-
-    function editUser(id) {
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const user = users.find(u => u.id === id);
-      if (user) {
-        userIdInput.value = user.id;
-        userUsernameInput.value = user.username;
-        userEmailInput.value = user.email;
-        userPasswordInput.value = user.password;
-        userPasswordConfirmInput.value = user.password;
-        userRoleInput.value = user.role;
-      }
-    }
-
-    function deleteUser(id) {
-      if (confirm('Tem certeza que deseja excluir este usuário?')) {
-        const users = JSON.parse(localStorage.getItem('users') || '[]');
-        const updatedUsers = users.filter(u => u.id !== id);
-        localStorage.setItem('users', JSON.stringify(updatedUsers));
-        refreshUserList();
-      }
-    }
-
-    function resetUserForm() {
-      userIdInput.value = '';
-      userUsernameInput.value = '';
-      userEmailInput.value = '';
-      userPasswordInput.value = '';
-      userPasswordConfirmInput.value = '';
-      userRoleInput.value = 'user';
-    }
-
-    initializeUsers();
-
-    const logoutButton = document.getElementById('logout-button');
-
-    logoutButton.addEventListener('click', () => {
-      if (confirm('Tem certeza que deseja sair? Todos os dados não salvos serão perdidos.')) {
-        logout();
-      }
-    });
-
-    function logout() {
-      resetSimulation();
-      newPatient();
-      
-      simulatorContent.classList.add('hidden');
-      
-      passwordModal.style.display = 'block';
-      
-      emailInput.value = '';
-      passwordInput.value = '';
-    }
   </script>
 <footer>
   Todos direitos reservados a Ricardo Queiroz & Doctor Channel Produtora
